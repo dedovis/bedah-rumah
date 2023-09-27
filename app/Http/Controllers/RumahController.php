@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Rumah;
 use Illuminate\Http\Request;
+use App\Http\Resources\RumahResource;
+use Illuminate\Support\Facades\Storage;
 
 class RumahController extends Controller
 {
@@ -12,7 +14,9 @@ class RumahController extends Controller
      */
     public function index()
     {
-        //
+        $geoJSONdata = Rumah::all();
+
+        return response()->json($geoJSONdata);
     }
 
     /**
@@ -28,7 +32,52 @@ class RumahController extends Controller
      */
     public function store(Request $request)
     {
-        Rumah::create($request->all());
+        // $validatedData = $request->validate([
+        //     'nama' => 'required|string|max:255',
+        //     'latitude' => 'required|string|max:50',
+        //     'longitude' => 'required|string|max:50',
+        //     'pekerjaan' => 'required|string|max:50',
+        //     'nik' => 'required|string|max:50',
+        //     'nokk' => 'required|string|max:50',
+        //     'alamat' => 'required|string',
+        //     'keterangan' => 'required|string',
+        //     'tempat_lahir' => 'required|string|max:50',
+        //     'tanggal_lahir' => 'required|date',
+        //     'foto_sebelum.*' => 'image|mimes:jpeg,png,jpg,gif',
+        //     'foto_sesudah.*' => 'image|mimes:jpeg,png,jpg,gif',
+        // ]);
+
+        $rumah = Rumah::create($request->all());
+
+        $upload = Rumah::find($rumah->id);
+        // Handle "foto_sebelum" images
+
+        $files = [];
+
+        if($request->hasfile('foto_sebelum'))
+         {
+            foreach($request->file('foto_sebelum') as $file)
+            {
+                $name = time().rand(1,50).'.'.$file->extension();
+                $file->move(public_path('img/fotosebelum'), $name);
+                $files[] = $name;
+            }
+         }
+
+
+        if($request->hasfile('foto_sesudah'))
+         {
+            foreach($request->file('foto_sesudah') as $file)
+            {
+                $name = time().rand(1,50).'.'.$file->extension();
+                $file->move(public_path('img/fotosesudah'), $name);
+                $files[] = $name;
+            }
+         }
+        $upload->foto_sebelum = json_encode($files); // Assuming you want to store file names in JSON format
+        $upload->foto_sesudah = json_encode($files); // You can adjust this based on your database structure
+
+        $upload->update();
 
         return redirect()->route('admin.beranda')->withSuccess('Marker Berhasil Disimpan');
     }
@@ -38,7 +87,7 @@ class RumahController extends Controller
      */
     public function show(Rumah $rumah)
     {
-        return view('edit', compact('rumah'));
+
     }
 
     /**
@@ -46,7 +95,7 @@ class RumahController extends Controller
      */
     public function edit(Rumah $rumah)
     {
-        //
+        return view('admin.show', compact('rumah'));
     }
 
     /**

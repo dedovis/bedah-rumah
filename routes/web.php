@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\mainController;
+use App\Http\Controllers\MainController;
 use App\Http\Controllers\RumahController;
 use Illuminate\Support\Facades\Route;
 

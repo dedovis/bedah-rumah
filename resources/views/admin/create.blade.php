@@ -32,11 +32,14 @@ Tambah Marker
 
                 <div class="card">
                     <div class="card-header">
-                        <div id="map" style="height: 400px;"></div>
+                        <div class="form-group" id="map" style="height: 400px;"></div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-outline-info text-center" id="addMarkerButton">Cek Marker</button>
+                        </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <form method="post" action="{{ route('admin.rumah.store') }}">
+                        <form method="post" action="{{ route('admin.rumah.store') }}" enctype="multipart/form-data">
                             <div class="modal-body">
                                 @csrf
                                 <div class="row">
@@ -44,7 +47,12 @@ Tambah Marker
                                         <div class="form-group">
                                             <label for="longitude">Longitude</label>
                                             <input type="text" class="form-control" id="longitude" name="longitude"
-                                                placeholder="longitude" required readonly>
+                                                placeholder="longitude" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="latitude">Latitude</label>
+                                            <input type="text" class="form-control" id="latitude" name="latitude"
+                                                placeholder="latitude" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="nama">Nama</label>
@@ -66,17 +74,8 @@ Tambah Marker
                                             <textarea type="text" class="form-control" id="alamat" name="alamat"
                                                 placeholder="Masukan Alamat" required></textarea>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="foto_sesudah">Foto Sesudah</label>
-                                            <input type="file" class="form-control" id="foto_sesudah" name="foto_sesudah">
-                                        </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="latitude">Latitude</label>
-                                            <input type="text" class="form-control" id="latitude" name="latitude"
-                                                placeholder="latitude" required readonly>
-                                        </div>
                                         <div class="form-group">
                                             <label for="pekerjaan">Pekerjaan</label>
                                             <input type="text" class="form-control" id="pekerjaan" name="pekerjaan"
@@ -99,7 +98,21 @@ Tambah Marker
                                         </div>
                                         <div class="form-group">
                                             <label for="foto_sebelum">Foto Sebelum</label>
-                                            <input type="file" class="form-control" id="foto_sebelum" name="foto_sebelum">
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" name="foto_sebelum[]" id="foto_sebelum" multiple>
+                                                    <label class="custom-file-label" for="foto_sebelum">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="foto_sesudah">Foto Sesudah</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" name="foto_sesudah[]" id="foto_sesudah" multiple>
+                                                    <label class="custom-file-label" for="foto_sesudah">Choose file</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -130,6 +143,10 @@ Tambah Marker
 @endsection
 
 @section('script')
+
+<!-- bs-custom-file-input -->
+<script src="{{asset('assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
+
 <script>
     var map = L.map('map').setView([-3.4458,114.8214], 13);
 
@@ -140,18 +157,32 @@ Tambah Marker
 
     var marker;
 
-    map.on('click', function (e) {
-        if (marker) {
-            marker.setLatLng(e.latlng);
-        } else {
-            marker = L.marker(e.latlng).addTo(map);
-        }
+    function addOrUpdateMarker() {
+        var latitude = parseFloat(document.getElementById('latitude').value);
+        var longitude = parseFloat(document.getElementById('longitude').value);
 
-        // Update latitude and longitude inputs
-        document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
-        document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+        if (!isNaN(latitude) && !isNaN(longitude)) {
+            var newLatLng = L.latLng(latitude, longitude);
+
+            if (marker) {
+                marker.setLatLng(newLatLng);
+            } else {
+                marker = L.marker(newLatLng).addTo(map);
+            }
+        } else {
+            toastr.warning('Koordinat tidak valid. Silakan masukkan nilai numerik yang valid.');
+        }
+    }
+
+    document.getElementById('addMarkerButton').addEventListener('click', function () {
+        addOrUpdateMarker();
     });
 
+    map.on('click', function (e) {
+        document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+        document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+        addOrUpdateMarker();
+    });
 
     var gmap = L.tileLayer('http://{s}.google.com/vt?lyrs=m,h&x={x}&y={y}&z={z}',{
     maxZoom: 20,
@@ -170,5 +201,12 @@ Tambah Marker
     };
 
     L.control.layers(baseMaps).addTo(map);
+
 </script>
+
+<script>
+    $(function () {
+      bsCustomFileInput.init();
+    });
+    </script>
 @endsection

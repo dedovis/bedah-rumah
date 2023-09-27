@@ -20,8 +20,10 @@ return new class extends Migration
             $table->string('pekerjaan')->length(50);
             $table->date('tanggal_lahir');
             $table->string('tempat_lahir');
-            $table->string('longitude')->nullable();
-            $table->string('latitude')->nullable();
+            // $table->float('longitude', 16, 8)->nullable();
+            // $table->float('latitude', 16, 8)->nullable();
+            $table->string('longitude');
+            $table->string('latitude');
             $table->string('foto_sebelum')->nullable();
             $table->string('foto_sesudah')->nullable();
             $table->text('keterangan');

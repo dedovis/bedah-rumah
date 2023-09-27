@@ -12,4 +12,9 @@ class Rumah extends Model
     protected $guarded = [
         '',
     ];
+
+    protected $casts = [
+        'foto_sebelum' => 'array',
+        'foto_sesudah' => 'array',
+    ];
 }

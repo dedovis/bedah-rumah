@@ -574,6 +574,7 @@ Dashboard
 @endsection
 
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     var map = L.map('map').setView([-3.4458,114.8214], 13);
 
@@ -582,9 +583,9 @@ Dashboard
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map);
 
-    var marker = L.marker([-3.4458,114.8214]).addTo(map).on('click', function (e) {
-        alert(e.latlng);
-    });
+    // var marker = L.marker([-3.4458,114.8214]).addTo(map).on('click', function (e) {
+    //     alert(e.latlng);
+    // });
 
     var gmap = L.tileLayer('http://{s}.google.com/vt?lyrs=m,h&x={x}&y={y}&z={z}',{
     maxZoom: 20,
@@ -604,11 +605,34 @@ Dashboard
 
     L.control.layers(baseMaps).addTo(map);
 
-    @foreach($rumah as $house)
-        L.marker([{{ $house->latitude }}, {{ $house->longitude }}])
-            .bindPopup("Nama: {{ $house->nama }}")
-            .addTo(map);
-    @endforeach
+    axios.get(' {{ route('admin.rumah.index') }} ')
+        .then(function (response) {
+            var geoJSONdata = response.data;
+
+            // geoJSONdata.forEach(function (geoJSONdata) {
+            //     L.marker([geoJSONdata.latitude, geoJSONdata.longitude])
+            //         .addTo(map)
+            //         .bindPopup(geoJSONdata.nama);
+            // });
+            geoJSONdata.forEach(function (geoJSONdata) {
+              const id = geoJSONdata.id
+              console.log(id);
+            var marker = L.marker([geoJSONdata.latitude, geoJSONdata.longitude])
+                .addTo(map)
+                .bindPopup(
+                    '<strong>' + geoJSONdata.nama + '</strong><br>' +
+                    geoJSONdata.alamat + '<br>' +
+
+                    '<a class="edit btn btn-sm btn-outline-info" href="rumah/'+id+'/edit">Detail</a>'
+
+                );
+        });
+
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+
 
 
     //custom marker
