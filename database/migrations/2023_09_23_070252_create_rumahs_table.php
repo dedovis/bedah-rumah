@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama')->length(100);
             $table->string('nik')->length(20);
             $table->string('nokk')->length(20);
+            $table->string('kategori')->length(20);
             $table->text('alamat');
             $table->string('pekerjaan')->length(50);
             $table->date('tanggal_lahir');

@@ -54,6 +54,13 @@ Tambah Marker
                                             <input type="text" class="form-control" id="latitude" name="latitude"
                                                 placeholder="latitude" required>
                                         </div>
+                                        <div class="form-group" bis_skin_checked="1">
+                                            <label for="exampleSelectRounded0">Kategori</label>
+                                            <select class="custom-select rounded-0" name="kategori" id="exampleSelectRounded0">
+                                            <option value="Rumah">Rumah</option>
+                                            <option value="Bak Sampah">Bak Sampah</option>
+                                            </select>
+                                            </div>
                                         <div class="form-group">
                                             <label for="nama">Nama</label>
                                             <input type="text" class="form-control" id="nama" name="nama"

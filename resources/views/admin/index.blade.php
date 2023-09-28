@@ -583,10 +583,6 @@ Dashboard
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map);
 
-    // var marker = L.marker([-3.4458,114.8214]).addTo(map).on('click', function (e) {
-    //     alert(e.latlng);
-    // });
-
     var gmap = L.tileLayer('http://{s}.google.com/vt?lyrs=m,h&x={x}&y={y}&z={z}',{
     maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3']
@@ -603,37 +599,64 @@ Dashboard
     "Google Satelite Maps": gsmap
     };
 
-    L.control.layers(baseMaps).addTo(map);
+    var category1Layer = L.layerGroup();
+    var category2Layer = L.layerGroup();
 
-    axios.get(' {{ route('admin.rumah.index') }} ')
-        .then(function (response) {
-            var geoJSONdata = response.data;
+    var category1Icon = L.icon({
+        iconUrl: '/icons/home-green.png',
+        iconSize: [30, 30], // Set the icon size
+        iconAnchor: [16, 32], // Set the anchor point
+        popupAnchor: [0, -32] // Set the popup anchor point
+    });
 
-            // geoJSONdata.forEach(function (geoJSONdata) {
-            //     L.marker([geoJSONdata.latitude, geoJSONdata.longitude])
-            //         .addTo(map)
-            //         .bindPopup(geoJSONdata.nama);
-            // });
-            geoJSONdata.forEach(function (geoJSONdata) {
-              const id = geoJSONdata.id
-              console.log(id);
-            var marker = L.marker([geoJSONdata.latitude, geoJSONdata.longitude])
-                .addTo(map)
-                .bindPopup(
-                    '<strong>' + geoJSONdata.nama + '</strong><br>' +
-                    geoJSONdata.alamat + '<br>' +
+    var category2Icon = L.icon({
+        iconUrl: '/icons/trash-red.png',
+        iconSize: [30, 30],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
 
-                    '<a class="edit btn btn-sm btn-outline-info" href="rumah/'+id+'/edit">Detail</a>'
+    axios.get('{{ route('admin.rumah.index') }}')
+    .then(function (response) {
+        var geoJSONdata = response.data;
 
-                );
+        geoJSONdata.forEach(function (geoJSONdata) {
+            const id = geoJSONdata.id;
+
+            var marker;
+            if (geoJSONdata.kategori === 'Rumah') {
+                marker = L.marker([geoJSONdata.latitude, geoJSONdata.longitude], { icon: category1Icon });
+            } else if (geoJSONdata.kategori === 'Bak Sampah') {
+                marker = L.marker([geoJSONdata.latitude, geoJSONdata.longitude], { icon: category2Icon });
+            }
+
+            marker.bindPopup(
+                '<strong>' + geoJSONdata.nama + '</strong><br>' +
+                geoJSONdata.alamat + '<br>' +
+                '<a class="edit btn btn-sm btn-outline-info" href="rumah/' + id + '/edit">Detail</a>'
+            );
+
+            if (geoJSONdata.kategori === 'Rumah') {
+                category1Layer.addLayer(marker);
+            } else if (geoJSONdata.kategori === 'Bak Sampah') {
+                category2Layer.addLayer(marker);
+            }
         });
 
-        })
-        .catch(function (error) {
-            console.error(error);
-        });
+        category1Layer.addTo(map);
+        category2Layer.addTo(map);
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
 
+    var overlayMaps = {
+    "Rumah": category1Layer,
+    "Bak Sampah": category2Layer,
+    };
 
+    // Create a layer control and add it to the map
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
 
     //custom marker
     // var greenIcon = L.icon({
@@ -653,10 +676,5 @@ Dashboard
     //satelite : s;
     //street : m;
     //terrain : p;
-
-    // L.tileLayer('http://{s}.google.com/vt?lyrs=s,h,h&x={x}&y={y}&z={z}',{
-    // maxZoom: 20,
-    // subdomains:['mt0','mt1','mt2','mt3']
-    // }).addTo(map);
 </script>
 @endsection
