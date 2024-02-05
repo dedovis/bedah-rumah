@@ -35,72 +35,62 @@ Informasi
                         <div class="form-group" id="map" style="height: 400px;"></div>
                     </div>
                     <!-- /.card-header -->
-                    <div class="card-body">
-                        <table >
-                            <tr >
-                                <td >Longitude</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->longitude }}</td>
-                            </tr>
-                            <tr >
-                                <td >Latitude</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->latitude }}</td>
-                            </tr>
-                            <tr >
-                                <td >Alamat</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->alamat }}</td>
-                            </tr>
-                            <tr >
-                                <td >Nama</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->nama }}</td>
-                            </tr>
-                            <tr >
-                                <td >Tempat, Tanggal Lahir</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->tempat_lahir }}, {{Carbon\carbon::parse($rumah->tanggal_lahir)->translatedFormat('d-F-Y')}}</td>
-                            </tr>
-                            <tr >
-                                <td >NIK</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->nik }}</td>
-                            </tr>
-                            <tr >
-                                <td >Nomor KK</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->nokk }}</td>
-                            </tr>
-                            <tr >
-                                <td >Pekerjaan</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->pekerjaan }}</td>
-                            </tr>
-                            <tr >
-                                <td >Keterangan</td>
-                                <td>:</td>
-                                <td text-align="left">{{ $rumah->keterangan }}</td>
-                            </tr>
-                    </table>
-                    </div>
-                    <hr>
+
+                        <div class="card-header">
+                            <h3 class="card-title">Detail</h3>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-3">Longitude</dt>
+                                <dd class="col-sm-9">{{ $rumah->longitude }}</dd>
+
+                                <dt class="col-sm-3">Latitude</dt>
+                                <dd class="col-sm-9">{{ $rumah->latitude }}</dd>
+
+                                <dt class="col-sm-3">Alamat</dt>
+                                <dd class="col-sm-9">{{ $rumah->alamat }}</dd>
+
+                                <dt class="col-sm-3">Nama</dt>
+                                <dd class="col-sm-9">{{ $rumah->nama }}</dd>
+
+                                <dt class="col-sm-3">Tempat, Tanggal Lahir</dt>
+                                <dd class="col-sm-9">{{ $rumah->tempat_lahir }}, {{Carbon\carbon::parse($rumah->tanggal_lahir)->translatedFormat('d-F-Y')}}</dd>
+
+                                <dt class="col-sm-3">NIK</dt>
+                                <dd class="col-sm-9">{{ $rumah->nik }}</dd>
+
+                                <dt class="col-sm-3">Nomor KK</dt>
+                                <dd class="col-sm-9">{{ $rumah->nokk }}</dd>
+
+                                <dt class="col-sm-3">Pekerjaan</dt>
+                                <dd class="col-sm-9">{{ $rumah->pekerjaan }}</dd>
+
+                                <dt class="col-sm-3">Keterangan</dt>
+                                <dd class="col-sm-9">{{ $rumah->keterangan }}</dd>
+                            </dl>
+                            <hr>
+
+                            @if ($rumah->foto_sebelum)
+                                <h4 class="card-subtitle mb-2 text-muted">Foto</h4>
+                                <div class="row">
+                                    @foreach (json_decode($rumah->foto_sebelum) as $image)
+                                        <div class="col-md-3">
+                                            <img src="{{ asset('img/fotosebelum/' . $image) }}" class="img-fluid" alt="Foto Sebelum">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
 
 
-                    @if ($rumah->foto_sebelum)
-                        <h4 class="card-subtitle mb-2 text-muted">Foto Sebelum</h4>
-                        @foreach (json_decode($rumah->foto_sebelum) as $image)
-                            <img src="{{ asset('img/fotosebelum/' . $image) }}" alt="Foto Sebelum">
-                        @endforeach
-                    @endif
 
 
-                    @if ($rumah->foto_sesudah)
+                    {{-- @if ($rumah->foto_sesudah)
                         <h4 class="card-subtitle mb-2 text-muted">Foto Sesudah</h4>
                         @foreach (json_decode($rumah->foto_sesudah) as $image)
                             <img src="{{ asset('img/fotosesudah/' . $image) }}" alt="Foto Sesudah">
                         @endforeach
-                    @endif
+                    @endif --}}
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
@@ -150,9 +140,4 @@ Informasi
 
 </script>
 
-<script>
-    $(function () {
-      bsCustomFileInput.init();
-    });
-    </script>
 @endsection

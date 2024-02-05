@@ -47,10 +47,7 @@ class RumahController extends Controller
         //     'foto_sesudah.*' => 'image|mimes:jpeg,png,jpg,gif',
         // ]);
 
-        $rumah = Rumah::create($request->all());
-
-        $upload = Rumah::find($rumah->id);
-        // Handle "foto_sebelum" images
+        $rumah = $request->all();
 
         $files = [];
 
@@ -65,19 +62,19 @@ class RumahController extends Controller
          }
 
 
-        if($request->hasfile('foto_sesudah'))
-         {
-            foreach($request->file('foto_sesudah') as $file)
-            {
-                $name = time().rand(1,50).'.'.$file->extension();
-                $file->move(public_path('img/fotosesudah'), $name);
-                $files[] = $name;
-            }
-         }
-        $upload->foto_sebelum = json_encode($files); // Assuming you want to store file names in JSON format
-        $upload->foto_sesudah = json_encode($files); // You can adjust this based on your database structure
+        // if($request->hasfile('foto_sesudah'))
+        //  {
+        //     foreach($request->file('foto_sesudah') as $file)
+        //     {
+        //         $name = time().rand(1,50).'.'.$file->extension();
+        //         $file->move(public_path('img/fotosesudah'), $name);
+        //         $files[] = $name;
+        //     }
+        //  }
+        $rumah->foto_sebelum = json_encode($files); // Assuming you want to store file names in JSON format
+        // $rumah->foto_sesudah = json_encode($files); // You can adjust this based on your database structure
 
-        $upload->update();
+        $save = Rumah::create($rumah);
 
         return redirect()->route('admin.beranda')->withSuccess('Marker Berhasil Disimpan');
     }
@@ -87,7 +84,7 @@ class RumahController extends Controller
      */
     public function show(Rumah $rumah)
     {
-
+        return view('admin.show', compact('rumah'));
     }
 
     /**
@@ -103,7 +100,23 @@ class RumahController extends Controller
      */
     public function update(Request $request, Rumah $rumah)
     {
-        //
+        $rumahData = $request->all();
+
+        $files = [];
+
+        if ($request->hasfile('foto_sebelum')) {
+            foreach ($request->file('foto_sebelum') as $file) {
+                $name = time() . rand(1, 50) . '.' . $file->extension();
+                $file->move(public_path('img/fotosebelum'), $name);
+                $files[] = $name;
+            }
+        }
+
+        $rumahData['foto_sebelum'] = json_encode($files);
+
+        $rumah->update($rumahData);
+
+        return redirect()->route('admin.beranda')->withSuccess('Marker Berhasil Diperbarui');
     }
 
     /**
@@ -111,6 +124,17 @@ class RumahController extends Controller
      */
     public function destroy(Rumah $rumah)
     {
-        //
+        $existingPhotos = json_decode($rumah->foto_sebelum, true) ?? [];
+
+        foreach ($existingPhotos as $photo) {
+            $photoPath = public_path('img/fotosebelum') . '/' . $photo;
+            if (File::exists($photoPath)) {
+                File::delete($photoPath);
+            }
+        }
+
+        $rumah->delete();
+
+        return redirect()->route('admin.beranda')->withSuccess('Marker Berhasil Dihapus');
     }
 }

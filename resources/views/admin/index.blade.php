@@ -631,9 +631,13 @@ Dashboard
             }
 
             marker.bindPopup(
-                '<strong>' + geoJSONdata.nama + '</strong><br>' +
-                geoJSONdata.alamat + '<br>' +
-                '<a class="edit btn btn-sm btn-outline-info" href="rumah/' + id + '/edit">Detail</a>'
+            '<strong>' + geoJSONdata.kategori + '</strong><br>' +
+            '<strong>' +'NIK: ' + '</strong>'+ '<br>' + geoJSONdata.nik + '<br>' +
+            '<strong>' +'Nama: ' + '</strong>'+ '<br>' + geoJSONdata.nama + '<br>' +
+            '<strong>' +'Alamat: ' + '</strong>'+ '<br>' + geoJSONdata.alamat + '<br>' +
+            '<strong>' +'No. KK: ' + '</strong>'+ '<br>' + geoJSONdata.nokk + '<br>' +
+            '<strong>' +'Keterangan: ' + '</strong>'+ '<br>' + geoJSONdata.keterangan + '<br>' +
+            '<strong>' +'<a class="edit btn btn-sm btn-outline-info" href="rumah/' + id + '/edit">Detail</a>'
             );
 
             if (geoJSONdata.kategori === 'Rumah') {

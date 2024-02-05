@@ -76,11 +76,6 @@ Tambah Marker
                                             <input type="number" class="form-control" id="nokk" name="nokk"
                                                 placeholder="Masukan Nomor KK" required>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="alamat">Alamat</label>
-                                            <textarea type="text" class="form-control" id="alamat" name="alamat"
-                                                placeholder="Masukan Alamat" required></textarea>
-                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -99,12 +94,17 @@ Tambah Marker
                                                 placeholder="Masukan tanggal ahir" required>
                                         </div>
                                         <div class="form-group">
+                                            <label for="alamat">Alamat</label>
+                                            <textarea type="text" class="form-control" id="alamat" name="alamat"
+                                                placeholder="Masukan Alamat" required></textarea>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="keterangan">Keterangan</label>
                                             <textarea class="form-control" id="keterangan" name="keterangan"
                                                 placeholder="Masukan Keterangan" required></textarea>
                                         </div>
                                         <div class="form-group">
-                                            <label for="foto_sebelum">Foto Sebelum</label>
+                                            <label for="foto_sebelum">Foto</label>
                                             <div class="input-group">
                                                 <div class="custom-file">
                                                     <input type="file" class="custom-file-input" name="foto_sebelum[]" id="foto_sebelum" multiple>
@@ -112,7 +112,7 @@ Tambah Marker
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        {{-- <div class="form-group">
                                             <label for="foto_sesudah">Foto Sesudah</label>
                                             <div class="input-group">
                                                 <div class="custom-file">
@@ -120,7 +120,7 @@ Tambah Marker
                                                     <label class="custom-file-label" for="foto_sesudah">Choose file</label>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
